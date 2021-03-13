@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<typesystem package="Cppmath">
+    <object-type name="Mathematician"></object-type>
+</typesystem>
