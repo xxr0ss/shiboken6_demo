@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
 <typesystem package="Cppmath">
+    <primitive-type name="int"/>
     <object-type name="Mathematician"></object-type>
 </typesystem>

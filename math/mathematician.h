@@ -16,7 +16,8 @@ public:
     Mathematician();
     ~Mathematician();
 
-    int inc();
+    void inc();
+    int getCount();
 
 private:
     int m_count = 0;

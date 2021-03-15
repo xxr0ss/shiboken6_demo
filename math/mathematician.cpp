@@ -8,7 +8,10 @@ Mathematician::~Mathematician() {
 
 }
 
-int Mathematician::inc() {
+void Mathematician::inc() {
     m_count ++;
+}
+
+int Mathematician::getCount() {
     return m_count;
 }
