@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED On)
 
 project(shiboken_simple)
 
-set(cppmath_library "libmath")
-set(bindings_library "Cppmath") # same as the binding package name
+set(cppmath_library "libmath")  # C++项目生成的dll名；dll's name
+set(bindings_library "Cppmath") # 和Python要导入的包名一样; same as the binding package name
 
 # get python environment for this project
 if (NOT python_interpreter)
@@ -18,19 +18,21 @@ message(STATUS "Using python: ${python_interpreter}")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/math)
 
 # =============================== Shiboken Configurations & build =============================
-# use our wrap_src_gen.py to generate names like xxx_wrapper.cpp
+# 使用脚本wrap_src_gen.py来产生xxx_wrapper.cpp，暂时不理解的话，其实也可以模仿samplebindings示例代码手写
+# use our wrap_src_gen.py to generate names like xxx_wrapper.cpp，you can manually write
+# wrappers name, please refer to the samplebindings in pyside's examples
 set(bindings_dir ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
 
 execute_process(COMMAND ${python_interpreter} ${bindings_dir}/wrap_src_gen.py 
                 ${CMAKE_CURRENT_BINARY_DIR}         # output dir
                 OUTPUT_VARIABLE generated_sources)  # save returned value in generated_sources
-list(LENGTH generated_sources list_len)
+list(LENGTH generated_sources list_len) # list_len == 0 means we failed to generate wrapper names
 message([*] "length: ${list_len}")
 foreach(src ${generated_sources})
     message([*] ${src})
 endforeach()
 
-
+# PySide6目录下的一个辅助脚本，直接复制过来用了，其实就是用于读取一些路径之类的，保存在变量里用于后面使用
 macro(pyside_config option output_var)
     if(${ARGC} GREATER 2)
         set(is_list ${ARGV2})
@@ -134,14 +136,6 @@ endif()
 set(windows_shiboken_shared_libraries)
 
 if(WIN32)
-    # =========================================================================================
-    # !!! (The section below is deployment related, so in a real world application you will
-    # want to take care of this properly (this is simply to eliminate errors that users usually
-    # encounter.
-    # =========================================================================================
-    # Circumvent some "#pragma comment(lib)"s in "include/pyconfig.h" which might force to link
-    # against a wrong python shared library.
-
     set(python_versions_list 3 36 37 38 39)
     set(python_additional_link_flags "")
     foreach(ver ${python_versions_list})
@@ -161,23 +155,11 @@ if(WIN32)
         file(TO_CMAKE_PATH ${library_path} library_path)
         list(APPEND windows_shiboken_shared_libraries "${library_path}")
     endforeach()
-    # =========================================================================================
-    # !!! End of dubious section.
-    # =========================================================================================
 endif()
 
-# =============================================================================================
-# !!! (The section below is deployment related, so in a real world application you will want to
-# take care of this properly with some custom script or tool).
-# =============================================================================================
-# Install the library and the bindings module into the source folder near the main.py file, so
-# that the Python interpeter successfully imports the used module.
 install(TARGETS ${cppmath_library} ${bindings_library}    # Since CMake 3.13, install can use TARGETS in subdirectories
     LIBRARY DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}
     RUNTIME DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}
 )
 message(STATUS "Install files: ${windows_shiboken_shared_libraries}")
 install(FILES ${windows_shiboken_shared_libraries} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
-# =============================================================================================
-# !!! End of dubious section.
-# =============================================================================================
