@@ -1,3 +1,4 @@
 build
 *.pyd
 *.dll
+.vscode
