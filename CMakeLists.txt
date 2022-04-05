@@ -10,6 +10,7 @@ set(bindings_library "Cppmath") # 和Python要导入的包名一样; same as the
 
 # get python environment for this project
 if (NOT python_interpreter)
+    find_program(python_interpreter "python3")
     find_program(python_interpreter "python")
 endif()
 message(STATUS "Using python: ${python_interpreter}")
