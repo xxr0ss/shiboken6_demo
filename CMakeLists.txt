@@ -137,7 +137,7 @@ endif()
 set(windows_shiboken_shared_libraries)
 
 if(WIN32)
-    set(python_versions_list 3 36 37 38 39 310)
+    set(python_versions_list 3 36 37 38 39 310 311 312)
     set(python_additional_link_flags "")
     foreach(ver ${python_versions_list})
         set(python_additional_link_flags
